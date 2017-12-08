@@ -7,10 +7,10 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		66D9AE861FDB21A400E145FD /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 66D9AE7F1FDB21A400E145FD /* GCDAsyncUdpSocket.m */; };
-		66D9AE871FDB21A400E145FD /* NSString+hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 66D9AE811FDB21A400E145FD /* NSString+hex.m */; };
-		66D9AE881FDB21A400E145FD /* ICoAPMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 66D9AE831FDB21A400E145FD /* ICoAPMessage.m */; };
-		66D9AE891FDB21A400E145FD /* ICoAPExchange.m in Sources */ = {isa = PBXBuildFile; fileRef = 66D9AE851FDB21A400E145FD /* ICoAPExchange.m */; };
+		6696F27C1FDB22D300E670C4 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 6696F2741FDB22D300E670C4 /* GCDAsyncUdpSocket.m */; };
+		6696F27D1FDB22D300E670C4 /* ICoAPExchange.m in Sources */ = {isa = PBXBuildFile; fileRef = 6696F2771FDB22D300E670C4 /* ICoAPExchange.m */; };
+		6696F27E1FDB22D300E670C4 /* NSString+hex.m in Sources */ = {isa = PBXBuildFile; fileRef = 6696F2781FDB22D300E670C4 /* NSString+hex.m */; };
+		6696F27F1FDB22D300E670C4 /* ICoAPMessage.m in Sources */ = {isa = PBXBuildFile; fileRef = 6696F2791FDB22D300E670C4 /* ICoAPMessage.m */; };
 		932ADE0117A2FABD00EB05AB /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 932ADE0017A2FABD00EB05AB /* UIKit.framework */; };
 		932ADE0317A2FABD00EB05AB /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 932ADE0217A2FABD00EB05AB /* Foundation.framework */; };
 		932ADE0517A2FABD00EB05AB /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 932ADE0417A2FABD00EB05AB /* CoreGraphics.framework */; };
@@ -25,14 +25,14 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		66D9AE7E1FDB21A400E145FD /* NSString+hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+hex.h"; path = "../../iCoAP/NSString+hex.h"; sourceTree = "<group>"; };
-		66D9AE7F1FDB21A400E145FD /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCDAsyncUdpSocket.m; path = ../../iCoAP/GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
-		66D9AE801FDB21A400E145FD /* ICoAPMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ICoAPMessage.h; path = ../../iCoAP/ICoAPMessage.h; sourceTree = "<group>"; };
-		66D9AE811FDB21A400E145FD /* NSString+hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+hex.m"; path = "../../iCoAP/NSString+hex.m"; sourceTree = "<group>"; };
-		66D9AE821FDB21A400E145FD /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCDAsyncUdpSocket.h; path = ../../iCoAP/GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
-		66D9AE831FDB21A400E145FD /* ICoAPMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ICoAPMessage.m; path = ../../iCoAP/ICoAPMessage.m; sourceTree = "<group>"; };
-		66D9AE841FDB21A400E145FD /* ICoAPExchange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ICoAPExchange.h; path = ../../iCoAP/ICoAPExchange.h; sourceTree = "<group>"; };
-		66D9AE851FDB21A400E145FD /* ICoAPExchange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ICoAPExchange.m; path = ../../iCoAP/ICoAPExchange.m; sourceTree = "<group>"; };
+		6696F2741FDB22D300E670C4 /* GCDAsyncUdpSocket.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = GCDAsyncUdpSocket.m; path = ../../iCoAP/iCoAP/GCDAsyncUdpSocket.m; sourceTree = "<group>"; };
+		6696F2751FDB22D300E670C4 /* GCDAsyncUdpSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = GCDAsyncUdpSocket.h; path = ../../iCoAP/iCoAP/GCDAsyncUdpSocket.h; sourceTree = "<group>"; };
+		6696F2761FDB22D300E670C4 /* ICoAPExchange.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ICoAPExchange.h; path = ../../iCoAP/iCoAP/ICoAPExchange.h; sourceTree = "<group>"; };
+		6696F2771FDB22D300E670C4 /* ICoAPExchange.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ICoAPExchange.m; path = ../../iCoAP/iCoAP/ICoAPExchange.m; sourceTree = "<group>"; };
+		6696F2781FDB22D300E670C4 /* NSString+hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = "NSString+hex.m"; path = "../../iCoAP/iCoAP/NSString+hex.m"; sourceTree = "<group>"; };
+		6696F2791FDB22D300E670C4 /* ICoAPMessage.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = ICoAPMessage.m; path = ../../iCoAP/iCoAP/ICoAPMessage.m; sourceTree = "<group>"; };
+		6696F27A1FDB22D300E670C4 /* NSString+hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = "NSString+hex.h"; path = "../../iCoAP/iCoAP/NSString+hex.h"; sourceTree = "<group>"; };
+		6696F27B1FDB22D300E670C4 /* ICoAPMessage.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = ICoAPMessage.h; path = ../../iCoAP/iCoAP/ICoAPMessage.h; sourceTree = "<group>"; };
 		932ADDFD17A2FABD00EB05AB /* iCoAP_Example.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = iCoAP_Example.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		932ADE0017A2FABD00EB05AB /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		932ADE0217A2FABD00EB05AB /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -123,14 +123,14 @@
 		932ADE2617A313BB00EB05AB /* iCoAP-Library_Files */ = {
 			isa = PBXGroup;
 			children = (
-				66D9AE821FDB21A400E145FD /* GCDAsyncUdpSocket.h */,
-				66D9AE7F1FDB21A400E145FD /* GCDAsyncUdpSocket.m */,
-				66D9AE841FDB21A400E145FD /* ICoAPExchange.h */,
-				66D9AE851FDB21A400E145FD /* ICoAPExchange.m */,
-				66D9AE801FDB21A400E145FD /* ICoAPMessage.h */,
-				66D9AE831FDB21A400E145FD /* ICoAPMessage.m */,
-				66D9AE7E1FDB21A400E145FD /* NSString+hex.h */,
-				66D9AE811FDB21A400E145FD /* NSString+hex.m */,
+				6696F2751FDB22D300E670C4 /* GCDAsyncUdpSocket.h */,
+				6696F2741FDB22D300E670C4 /* GCDAsyncUdpSocket.m */,
+				6696F2761FDB22D300E670C4 /* ICoAPExchange.h */,
+				6696F2771FDB22D300E670C4 /* ICoAPExchange.m */,
+				6696F27B1FDB22D300E670C4 /* ICoAPMessage.h */,
+				6696F2791FDB22D300E670C4 /* ICoAPMessage.m */,
+				6696F27A1FDB22D300E670C4 /* NSString+hex.h */,
+				6696F2781FDB22D300E670C4 /* NSString+hex.m */,
 			);
 			name = "iCoAP-Library_Files";
 			sourceTree = "<group>";
@@ -201,13 +201,13 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				6696F27C1FDB22D300E670C4 /* GCDAsyncUdpSocket.m in Sources */,
 				932ADE0D17A2FABD00EB05AB /* main.m in Sources */,
 				932ADE1117A2FABD00EB05AB /* AppDelegate.m in Sources */,
-				66D9AE891FDB21A400E145FD /* ICoAPExchange.m in Sources */,
 				932ADE2517A3136100EB05AB /* ExampleViewController.m in Sources */,
-				66D9AE881FDB21A400E145FD /* ICoAPMessage.m in Sources */,
-				66D9AE861FDB21A400E145FD /* GCDAsyncUdpSocket.m in Sources */,
-				66D9AE871FDB21A400E145FD /* NSString+hex.m in Sources */,
+				6696F27D1FDB22D300E670C4 /* ICoAPExchange.m in Sources */,
+				6696F27F1FDB22D300E670C4 /* ICoAPMessage.m in Sources */,
+				6696F27E1FDB22D300E670C4 /* NSString+hex.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
