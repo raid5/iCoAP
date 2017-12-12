@@ -84,9 +84,7 @@ typedef enum {
     /*
      HTTP Proxying
     */
-    NSMutableURLRequest *urlRequest;
-    NSURLConnection *urlConnection;
-    NSMutableData *urlData;
+    NSURLSessionDataTask *task;
     
     ICoAPMessage *proxyCoAPMessage;
     

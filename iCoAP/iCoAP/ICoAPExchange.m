@@ -29,10 +29,6 @@
 - (NSString *)getHttpHeaderFieldForCoAPOptionDelta:(NSUInteger)delta;
 - (NSString *)getHttpMethodForCoAPMessageCode:(NSUInteger)code;
 - (ICoAPType)getCoapTypeForString:(NSString *)typeString;
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error;
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response;
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data;
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection;
 @end
 
 @implementation ICoAPExchange
@@ -234,7 +230,7 @@
             else {
                 NSRange optionValueRange = NSMakeRange(optionIndex + optionIndexOffset, optionLength * 2);
                 RETURN_IF_RANGE_INVALID(optionValueRange);
-                optVal = [NSString stringFromHexString:[[hexString substringWithRange: optionValueRange] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding]];
+                optVal = [NSString stringFromHexString:[[hexString substringWithRange: optionValueRange] stringByRemovingPercentEncoding]];
             }
             
             [cO addOption:newOptionNumber withValue:optVal];
@@ -250,7 +246,7 @@
     
     //Payload, first check if payloadmarker exists
     if (payloadStartIndex + 2 < [hexString length]) {
-        cO.payload = [self requiresPayloadStringDecodeForCoAPMessage:cO] ? [[NSString stringFromHexString:[hexString substringFromIndex:payloadStartIndex + 2]] stringByReplacingPercentEscapesUsingEncoding:NSUTF8StringEncoding] : [hexString substringFromIndex:payloadStartIndex + 2];
+        cO.payload = [self requiresPayloadStringDecodeForCoAPMessage:cO] ? [[NSString stringFromHexString:[hexString substringFromIndex:payloadStartIndex + 2]] stringByRemovingPercentEncoding] : [hexString substringFromIndex:payloadStartIndex + 2];
 
         if (!cO.payload) {
             cO.payload = [NSString stringFromHexString:[hexString substringFromIndex:payloadStartIndex + 2]];
@@ -711,10 +707,7 @@
 
 - (void)closeExchange {
     if (pendingCoAPMessageInTransmission.usesHttpProxying) {
-        [urlConnection cancel];
-        urlConnection = nil;
-        urlData = nil;
-        urlRequest = nil;
+        [task cancel];
     }
     else {
         self.udpSocket.delegate = nil;
@@ -743,7 +736,7 @@
 - (void)sendHttpMessageFromCoAPMessage:(ICoAPMessage *)coapMessage {
     [self resetState];
     NSString *urlString = [NSString stringWithFormat:@"http://%@:%lu/%@:%lu",coapMessage.httpProxyHost, (unsigned long)coapMessage.httpProxyPort, coapMessage.host, (unsigned long)coapMessage.port];
-    urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:kMAX_TRANSMIT_WAIT];
+    NSMutableURLRequest *urlRequest = [NSMutableURLRequest requestWithURL:[NSURL URLWithString:urlString] cachePolicy:NSURLRequestUseProtocolCachePolicy timeoutInterval:kMAX_TRANSMIT_WAIT];
     
     if (coapMessage.code != IC_GET) {
         [urlRequest setHTTPMethod:[self getHttpMethodForCoAPMessageCode:coapMessage.code]];
@@ -757,11 +750,51 @@
     }
     
     [urlRequest setHTTPBody:[coapMessage.payload dataUsingEncoding:NSUTF8StringEncoding]];
-    urlConnection = [[NSURLConnection alloc] initWithRequest:urlRequest delegate:self];
-    if (!urlConnection) {
-        NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Failed to send HTTP-Request." forKey:NSLocalizedDescriptionKey];
-        [self sendFailWithErrorToDelegateWithError:[[NSError alloc] initWithDomain:kiCoAPErrorDomain code:IC_PROXYING_ERROR userInfo:userInfo]];
-    }
+    
+    NSURLSessionDataTask *task = [[NSURLSession sharedSession] dataTaskWithRequest:urlRequest
+                                                                 completionHandler:^(NSData *data, NSURLResponse *response, NSError *error)
+    {
+        if (error) {
+            [self closeExchange];
+            NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Proxying Failure." forKey:NSLocalizedDescriptionKey];
+            [self sendFailWithErrorToDelegateWithError:[[NSError alloc] initWithDomain:kiCoAPErrorDomain code:IC_PROXYING_ERROR userInfo:userInfo]];
+            return;
+        }
+        
+        proxyCoAPMessage = [[ICoAPMessage alloc] init];
+        proxyCoAPMessage.isRequest = NO;
+        
+        NSHTTPURLResponse *httpresponse = (NSHTTPURLResponse *)response;
+        
+        for (NSNumber *optNumber in supportedOptions) {
+            NSString *optString = [self getHttpHeaderFieldForCoAPOptionDelta:[optNumber intValue]];
+            
+            if ([httpresponse.allHeaderFields objectForKey:[NSString stringWithFormat:@"HTTP_%@", optString]]) {
+                NSString *valueString = [httpresponse.allHeaderFields objectForKey:[NSString stringWithFormat:@"HTTP_%@", optString]];
+                NSArray *valueArray = [valueString componentsSeparatedByString:@","];
+                
+                [proxyCoAPMessage.optionDict setValue:[NSMutableArray arrayWithArray:valueArray] forKey:[optNumber stringValue]];
+            }
+        }
+        
+        proxyCoAPMessage.type = [self getCoapTypeForString:[httpresponse.allHeaderFields objectForKey:kProxyCoAPTypeIndicator]];
+        proxyCoAPMessage.code = httpresponse.statusCode;
+        proxyCoAPMessage.usesHttpProxying = YES;
+        proxyCoAPMessage.payload = [self requiresPayloadStringDecodeForCoAPMessage:proxyCoAPMessage]
+                                    ? [NSString stringFromHexString:[NSString stringFromDataWithHex:data]]
+                                    : [NSString stringFromDataWithHex:data];
+        proxyCoAPMessage.timestamp = [[NSDate alloc] init];
+        
+        if ([proxyCoAPMessage.optionDict valueForKey:[NSString stringWithFormat:@"%i", IC_BLOCK2]] && ![proxyCoAPMessage.optionDict valueForKey:[NSString stringWithFormat:@"%i", IC_OBSERVE]]) {
+            [self handleBlock2OptionForCoapMessage:proxyCoAPMessage];
+        }
+        else {
+            _isMessageInTransmission = NO;
+        }
+        
+        [self sendDidReceiveMessageToDelegateWithCoAPMessage:proxyCoAPMessage];
+    }];
+    [task resume];
 }
 
 #pragma mark - Mapping Methods for Proxying
@@ -839,57 +872,6 @@
     else {
         return IC_ACKNOWLEDGMENT;
     }
-}
-
-#pragma mark - NSURL Connection Delegate
-
-- (void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
-    [self closeExchange];
-    NSDictionary *userInfo = [NSDictionary dictionaryWithObject:@"Proxying Failure." forKey:NSLocalizedDescriptionKey];
-    [self sendFailWithErrorToDelegateWithError:[[NSError alloc] initWithDomain:kiCoAPErrorDomain code:IC_PROXYING_ERROR userInfo:userInfo]];
-}
-
-#pragma mark - NSURL Connection Data Delegate
-
-- (void)connection:(NSURLConnection *)connection didReceiveResponse:(NSURLResponse *)response {
-    urlData = [[NSMutableData alloc] init];
-    proxyCoAPMessage = [[ICoAPMessage alloc] init];
-    proxyCoAPMessage.isRequest = NO;
-    
-    NSHTTPURLResponse *httpresponse = (NSHTTPURLResponse *)response;
-    
-    for (NSNumber *optNumber in supportedOptions) {
-        NSString *optString = [self getHttpHeaderFieldForCoAPOptionDelta:[optNumber intValue]];
-        
-        if ([httpresponse.allHeaderFields objectForKey:[NSString stringWithFormat:@"HTTP_%@", optString]]) {
-            NSString *valueString = [httpresponse.allHeaderFields objectForKey:[NSString stringWithFormat:@"HTTP_%@", optString]];
-            NSArray *valueArray = [valueString componentsSeparatedByString:@","];
-            
-            [proxyCoAPMessage.optionDict setValue:[NSMutableArray arrayWithArray:valueArray] forKey:[optNumber stringValue]];
-        }
-    }
-    
-    proxyCoAPMessage.type = [self getCoapTypeForString:[httpresponse.allHeaderFields objectForKey:kProxyCoAPTypeIndicator]];
-    proxyCoAPMessage.code = httpresponse.statusCode;
-    proxyCoAPMessage.usesHttpProxying = YES;
-}
-
-- (void)connection:(NSURLConnection *)connection didReceiveData:(NSData *)data {
-    [urlData appendData:data];
-}
-
-- (void)connectionDidFinishLoading:(NSURLConnection *)connection {
-    proxyCoAPMessage.payload = [self requiresPayloadStringDecodeForCoAPMessage:proxyCoAPMessage] ? [NSString stringFromHexString:[NSString stringFromDataWithHex:urlData]] : [NSString stringFromDataWithHex:urlData];
-    proxyCoAPMessage.timestamp = [[NSDate alloc] init];
-    
-    if ([proxyCoAPMessage.optionDict valueForKey:[NSString stringWithFormat:@"%i", IC_BLOCK2]] && ![proxyCoAPMessage.optionDict valueForKey:[NSString stringWithFormat:@"%i", IC_OBSERVE]]) {
-        [self handleBlock2OptionForCoapMessage:proxyCoAPMessage];
-    }
-    else {
-        _isMessageInTransmission = NO;
-    }
-    
-    [self sendDidReceiveMessageToDelegateWithCoAPMessage:proxyCoAPMessage];
 }
 
 - (BOOL)requiresPayloadStringDecodeForCoAPMessage:(ICoAPMessage *)coapMessage {
