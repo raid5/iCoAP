@@ -78,7 +78,8 @@ typedef enum {
     IC_SIZE2 = 28,
     IC_PROXY_URI = 35,
     IC_PROXY_SCHEME = 39,
-    IC_SIZE1 = 60
+    IC_SIZE1 = 60,
+    IC_INTROSPECTION = 61
 } ICoAPOption;
 
 
@@ -132,20 +133,20 @@ typedef enum {
  *  'httpProxyPort':
  *  The HTTP-Proxy Port (optional).
  */
-@property (readwrite, nonatomic) uint httpProxyPort;
+@property (readwrite, nonatomic) NSUInteger httpProxyPort;
 
 
 /*
  *  'type':
  *  The CoAP Message Type
  */
-@property (readwrite, nonatomic) uint type;
+@property (readwrite, nonatomic) NSUInteger type;
 
 /*
  *  'code':
  *  The CoAP Message Code
  */
-@property (readwrite, nonatomic) uint code;
+@property (readwrite, nonatomic) NSUInteger code;
 
 /*
  *  'optionDict':
@@ -159,14 +160,14 @@ typedef enum {
  *  'messageID':
  *  The CoAP Message ID
  */
-@property (readwrite, nonatomic) uint messageID;
+@property (readwrite, nonatomic) NSUInteger messageID;
 
 /*
  *  'token':
  *  the CoAP Message Token. Is set upon passing it to a
  *  ICoAPExchange object, if 'isTokenRequired is set to YES.
  */
-@property (readwrite, nonatomic) uint token;
+@property (readwrite, nonatomic) NSUInteger token;
 
 /*
  *  'payload':
@@ -184,7 +185,7 @@ typedef enum {
  *  'port':
  *  CoAP-Serverport of the CoAP-Message destination/origin.
  */
-@property (readwrite, nonatomic) uint port;
+@property (readwrite, nonatomic) NSUInteger port;
 
 
 /*
@@ -219,7 +220,7 @@ typedef enum {
  *  'initAsRequestConfirmable:requestMethod:sendToken:payload':
  *  Initialization with settings.
  */
-- (id)initAsRequestConfirmable:(BOOL)con requestMethod:(uint)req sendToken:(BOOL)token payload:(NSString *)payload;
+- (id)initAsRequestConfirmable:(BOOL)con requestMethod:(NSUInteger)req sendToken:(BOOL)token payload:(NSString *)payload;
 
 /*
  *  'addOption:withValue'
@@ -230,7 +231,7 @@ typedef enum {
  *  The "value" of the dictionary: An NSMutableArray of option values
  *  coresponding to the "key" option number
  */
-- (void)addOption:(uint)option withValue:(NSString *)value;
+- (void)addOption:(NSUInteger)option withValue:(NSString *)value;
 
 @end
 

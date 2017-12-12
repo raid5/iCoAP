@@ -16,7 +16,7 @@
     return self;
 }
 
-- (id)initAsRequestConfirmable:(BOOL)con requestMethod:(uint)req sendToken:(BOOL)token payload:(NSString *)payload {
+- (id)initAsRequestConfirmable:(BOOL)con requestMethod:(NSUInteger)req sendToken:(BOOL)token payload:(NSString *)payload {
     if (self = [self init]) {
         if (con) {
             self.type = IC_CONFIRMABLE;
@@ -38,15 +38,15 @@
     return self;
 }
 
-- (void)addOption:(uint)option withValue:(NSString *)value {
+- (void)addOption:(NSUInteger)option withValue:(NSString *)value {
     NSMutableArray *valueArray;
     
-    if ([self.optionDict valueForKey:[NSString stringWithFormat:@"%i", option]]) {
-        valueArray = [self.optionDict valueForKey:[NSString stringWithFormat:@"%i", option]];
+    if ([self.optionDict valueForKey:[NSString stringWithFormat:@"%lu", (unsigned long)option]]) {
+        valueArray = [self.optionDict valueForKey:[NSString stringWithFormat:@"%lu", (unsigned long)option]];
     }
     else {
         valueArray = [[NSMutableArray alloc] init];
-        [self.optionDict setValue:valueArray forKey:[NSString stringWithFormat:@"%i", option]];
+        [self.optionDict setValue:valueArray forKey:[NSString stringWithFormat:@"%lu", (unsigned long)option]];
     }
     
     [valueArray addObject:value];

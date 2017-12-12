@@ -32,17 +32,14 @@
 #import "GCDAsyncUdpSocket.h"
 #import "ICoAPMessage.h"
 
-
-
-
 #define k8bitIntForOption                   13
 #define k16bitIntForOption                  14
 #define kOptionDeltaPayloadIndicator        15
 
-#define kMAX_RETRANSMIT                     4
+#define kMAX_RETRANSMIT                     2
 #define kACK_TIMEOUT                        2.0
 #define kACK_RANDOM_FACTOR                  1.5
-#define kMAX_TRANSMIT_WAIT                  93.0
+#define kMAX_TRANSMIT_WAIT                  20.0
 
 #define kMaxObserveOptionValue              8388608
 #define kMaxNotificationDelayTime           128.0
@@ -87,16 +84,14 @@ typedef enum {
     /*
      HTTP Proxying
     */
-    NSMutableURLRequest *urlRequest;
-    NSURLConnection *urlConnection;
-    NSMutableData *urlData;
+    NSURLSessionDataTask *task;
     
     ICoAPMessage *proxyCoAPMessage;
     
     NSArray *supportedOptions;
 }
 
-
+- (BOOL)setupUdpSocket;
 
 
 
@@ -135,7 +130,8 @@ typedef enum {
  */
 @property (readonly, nonatomic) BOOL isMessageInTransmission;
 
-
+//Used if the COAP request is going to be sent locally
+@property (nonatomic, assign) BOOL isRequestLocal;
 
 
 
